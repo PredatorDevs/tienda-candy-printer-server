@@ -443,59 +443,59 @@ async function checkPrinterOnline(ipAddress) {
 
 controller.printTestPage = (req, res) => {
   try {
-    const commands = '\x1B\x40Hello ESC/POS\n\x1D\x56\x00'; // Comandos ESC/POS
-    const printerPath = '\\\\Luciernaga\\Epson TM-U950 Receipt';
+    // const commands = '\x1B\x40Hello ESC/POS\n\x1D\x56\x00'; // Comandos ESC/POS
+    // const printerPath = '\\\\Luciernaga\\Epson TM-U950 Receipt';
 
-    // Crea un archivo temporal con los comandos ESC/POS
-    const tempFile = 'temp_comandos.txt';
-    fs.writeFileSync(tempFile, commands, 'binary');
+    // // Crea un archivo temporal con los comandos ESC/POS
+    // const tempFile = 'temp_comandos.txt';
+    // fs.writeFileSync(tempFile, commands, 'binary');
 
-    // Ejecuta el comando copy
-    const command = `copy /b ${tempFile} "${printerPath}"`;
+    // // Ejecuta el comando copy
+    // const command = `copy /b ${tempFile} "${printerPath}"`;
 
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.log(`Error al imprimir ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.log(`Error ${stderr}`);
-        return;
-      }
-      console.log('Impresor completa');
-      return;
-    });
-    // const device  = new escpos.USB(vId, pId);
+    // exec(command, (error, stdout, stderr) => {
+    //   if (error) {
+    //     console.log(`Error al imprimir ${error.message}`);
+    //     return;
+    //   }
+    //   if (stderr) {
+    //     console.log(`Error ${stderr}`);
+    //     return;
+    //   }
+    //   console.log('Impresor completa');
+    //   return;
+    // });
+    const device  = new escpos.USB(vId, pId);
     // const device = new escpos.Network('127.0.0.1', 9105);
     // const device = new escpos.Win('ESDPRT001');
-    // console.log(device);
+    console.log(device);
 
-    // const options = { encoding: "GB18030", width: 56 /* default */ }
-    // const printer = new escpos.Printer(device, options);
+    const options = { encoding: "GB18030", width: 56 /* default */ }
+    const printer = new escpos.Printer(device, options);
 
-    // const remoteAddress = req.headers['x-real-ip'] || req.connection.remoteAddress;
+    const remoteAddress = req.headers['x-real-ip'] || req.connection.remoteAddress;
 
-    // device.open(function(error){
-    //   printer
-    //   .font('A')
-    //   .align('LT')
-    //   .style('NORMAL')
-    //   .size(0, 0)
-    //   .text(`You are printing from ${remoteAddress || ''}`)
-    //   .feed(5)
-    //   .text('HELLO WORLD')
-    //   .feed(2)
-    //   .control('FF')
-    //   .cut()
-    //   .feed(2)
-    //   .close((err) => {
-    //     if (err) {
-    //       res.status(500).json({ status: 500, message: 'Printer connection failed!', errorContent: err });
-    //     } else {
-    //       res.json({ data: "Printer connection success!" });
-    //     }
-    //   });
-    // });
+    device.open(function(error){
+      printer
+      .font('A')
+      .align('LT')
+      .style('NORMAL')
+      .size(0, 0)
+      .text(`You are printing from ${remoteAddress || ''}`)
+      .feed(5)
+      .text('HELLO WORLD')
+      .feed(2)
+      .control('FF')
+      .cut()
+      .feed(2)
+      .close((err) => {
+        if (err) {
+          res.status(500).json({ status: 500, message: 'Printer connection failed!', errorContent: err });
+        } else {
+          res.json({ data: "Printer connection success!" });
+        }
+      });
+    });
     res.json({ data: "Printer connection success!" });
   } catch(err) {
     console.log(err);
@@ -910,8 +910,8 @@ controller.printCFTicket = (req, res) => {
 
 controller.printInternalSaleTicket = (req, res) => {
   try {
-    // const device  = new escpos.USB(vId, pId);
-    const device = new escpos.Network('127.0.0.1', 9105);
+    const device  = new escpos.USB(vId, pId);
+    // const device = new escpos.Network('127.0.0.1', 9105);
     const options = { encoding: "GB18030", width: 48 /* default */ }
     const printer = new escpos.Printer(device, options);
 
@@ -1019,7 +1019,7 @@ controller.printInternalSaleTicket = (req, res) => {
       .control('FF')
       .cut()
       // .feed(2)
-      // .cashdraw(2)
+      .cashdraw(2)
       .close((err) => {
         if (err) {
           res.json({ data: "Print error" });
