@@ -1,0 +1,1 @@
+\x1B\x40Hello ESC/POS\n\x1D\x56\x00
